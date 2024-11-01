@@ -1,10 +1,10 @@
 {
-    "name": "bot-zeus",
+    "name": "bot-aquiles",
     "version": "1.0.0",
     "description": "bot-zeus: baseado em Whatsapp API",
     "main": "app.js",
     "scripts": {
-      "start": "node .\botzdg_typebot_stop.js",
+      "start": "forever start botaquiles.js",
       "start:dev": "nodemon app.js",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
