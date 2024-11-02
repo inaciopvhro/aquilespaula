@@ -20,7 +20,7 @@ var nIntervId2;
 var nIntervId3;
 
 // NUMEROS AUTORIZADOS
-const permissaoBot = ["556992102573@c.us", "556992793755", "557598453409", "557591385689", "556993986449", "557583480660"];
+const permissaoBot = ["556992102573@c.us", "556992793755@c.us", "557598453409@c.us", "557591385689@c.us", "556993986449@c.us", "557583480660@c.us"];
 
 // COMANDOS DO BOT
 const comandosBot = ["!env1", "!env2", "!env3", "!assu", "!desc", "!fcgr", "abgr", "!pdr"];
@@ -33,7 +33,7 @@ function delay(t, v) {
 
 const createConnection = async () => {
 	return await mysql.createConnection({
-		host: '147.79.86.208',
+		host: 'localhost',
 		user: 'root',
 		password: 'Inacio@2628',
 		database: 'BancoBot'
