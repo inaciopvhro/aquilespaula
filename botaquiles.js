@@ -33,8 +33,8 @@ function delay(t, v) {
 
 const createConnection = async () => {
 	return await mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
+		host: '147.79.86.208',
+		user: 'inaciolocal',
 		password: 'Inacio@2628',
 		database: 'BancoBot'
 	});
@@ -53,9 +53,9 @@ const getUser = async (msgfom) => {
 	return false;
 };
 
-const setUser = async (msgfom, nome) => {
+const setUser = async (msgfom, nome, gruponome) => {
 	const connection = await createConnection();
-	const [rows] = await connection.execute('INSERT INTO `contatos` (`id`, `contato`, `nome`) VALUES (NULL, ?, ?)', [msgfom, nome]);
+	const [rows] = await connection.execute('INSERT INTO `contatos` (`id`, `contato`, `nome`, `grupo`) VALUES (NULL, ?, ?, ?)', [msgfom, nome, gruponome]);
   delay(1000).then(async function() {
 		await connection.end();
 		delay(500).then(async function() {
@@ -356,7 +356,7 @@ client.on('message', async msg => {
 client.on('message', async msg => {
   if (msg.body === null) return;
   const mensagem = msg.body.slice(0,5);
-  console.log(mensagem);
+  
   primeirostr = mensagem.charAt(0);
   if (primeirostr === '!') {
     if (!comandosBot.includes(mensagem))
@@ -624,11 +624,12 @@ client.on('group_join', async (notification) => {
   try{
     const contact = await client.getContactById(notification.id.participant)
     const nomeContato = (contact.pushname === undefined) ? contact.verifiedName : contact.pushname;
+    const grupoid = await client.getChatById(notification.id.remote);
     const user = notification.id.participant.replace(/\D/g, '');
     const getUserFrom = await getUser(user);
-
+    
     if (getUserFrom === false) {
-      await setUser(user, nomeContato);
+      await setUser(user, nomeContato, grupoid.name);
       console.log('Usuário armazenado: ' + user + ' - ' + nomeContato)
     }
 
