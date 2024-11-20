@@ -326,13 +326,6 @@ function confighora(horaenvio) {
 
 // EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
 client.on('message', async msg => {
-  if (msg.body === null) return;
-  const mensagem = msg.body.slice(0,5);
-  primeirostr = mensagem.charAt(0);
-  if (primeirostr === '!') {
-    if (!comandosBot.includes(mensagem))
-      return msg.reply("Comando não reconhecido"), msg.react('🚫');
-  }      
   // REMOVER LINKS
   const chat = await client.getChatById(msg.id.remote);
   for (const participant of chat.participants) {
