@@ -14,7 +14,7 @@ const mysql = require('mysql2/promise');
 
 // PORTA ONDE O SERVIÇO SERÁ INICIADO
 const port = 3400;
-const idClient = 'BotAquiles';
+const idClient = 'Inacio';
 var nIntervId1;
 var nIntervId2;
 var nIntervId3;
@@ -22,7 +22,6 @@ var nIntervId3;
 // NUMEROS AUTORIZADOS
 const permissaoBot = ["556992102573@c.us", "556992793755@c.us", "557598453409@c.us", "557591385689@c.us", "556993986449@c.us", "557583480660@c.us"];
 
-// COMANDOS DO BOT
 const comandosBot = ["!env1", "!env2", "!env3", "!assu", "!desc", "!fcgr", "abgr", "!pdr"];
 
 function delay(t, v) {
@@ -103,44 +102,50 @@ client.initialize();
 
 // EVENTOS DE CONEXÃO EXPORTADOS PARA O INDEX.HTML VIA SOCKET
 io.on('connection', function(socket) {
-  socket.emit('message', '© BOT-AQUILES - Iniciado');
+  socket.emit('message', '© BOT-Apollo - Iniciado');
   socket.emit('qr', './whatsappDesconetado.png');
 
 client.on('qr', (qr) => {
     console.log('QR RECEIVED', qr);
     qrcode.toDataURL(qr, (err, url) => {
       socket.emit('qr', url);
-      socket.emit('message', '© BOT-AQUILES QRCode recebido, aponte a câmera do seu celular!');
+      socket.emit('message', '© BOT-Apollo QRCode recebido, aponte a câmera do seu celular!');
     });
 });
 
 if (client.on('authenticated', (session) => {
-    socket.emit('authenticated', '© BOT-AQUILES Autenticado!');
-    socket.emit('message', '© BOT-AQUILES Autenticado!');
-    console.log('© BOT-AQUILES Autenticado');
+    socket.emit('authenticated', '© BOT-Apollo Autenticado!');
+    socket.emit('message', '© BOT-Apollo Autenticado!');
+    console.log('© BOT-Apoll Autenticado');
 }));
 
 client.on('auth_failure', function() {
-    socket.emit('message', '© BOT-AQUILES Falha na autenticação, reiniciando...');
-    console.error('© BOT-AQUILES Falha na autenticação');
+    socket.emit('message', '© BOT-Apollo Falha na autenticação, reiniciando...');
+    console.error('© BOT-Apollo Falha na autenticação');
 });
 
 client.on('change_state', state => {
-  console.log('© BOT-AQUILES Status de conexão: ', state );
-  socket.emit('message', '© BOT-AQUILES Status de conexão: '+ state);
+  console.log('© BOT-Apollo Status de conexão: ', state );
+  socket.emit('message', '© BOT-Apollo Status de conexão: '+ state);
 });
 
 client.on('disconnected', (reason) => {
-  socket.emit('message', '© BOT-AQUILES Cliente desconectado!');
-  console.log('© BOT-AQUILES Cliente desconectado', reason);
+  socket.emit('message', '© BOT-Apollo Cliente desconectado!');
+  console.log('© BOT-Apollo Cliente desconectado', reason);
   
 });
  (client.on('ready', async () => {
-  socket.emit('ready', '© BOT-AQUILES Dispositivo pronto!');
-  socket.emit('message', '© BOT-AQUILES Dispositivo pronto!');
+  socket.emit('ready', '© BOT-Apollo Dispositivo pronto!');
+  socket.emit('message', '© BOT-Apollo Dispositivo pronto!');
   socket.emit('qr', './whatsappConectado.png');
-  console.log('© BOT-AQUILES Dispositivo pronto');
-  
+  console.log('© BOT-Apollo Dispositivo pronto');
+  const groups = await client.getChats()
+  for (const group of groups){
+    if(group.id.server.includes('g.us')){
+      socket.emit('relatorio', 'Nome: ' + group.name + ' - ID: ' + group.id._serialized.split('@')[0]);
+      
+    }
+  }  
   }));
 });
 
@@ -305,7 +310,6 @@ function confighora(horaenvio) {
   function get_random (list) {
     return list[Math.floor((Math.random()*list.length))];
   }
-  
   client.getChats().then(chats => {
     const groups = chats.filter(chat => chat.isGroup);
         if (groups.length == 0) {
@@ -314,7 +318,9 @@ function confighora(horaenvio) {
           groups.forEach((group, i) => {
             setTimeout(function() {
               try {
-                group.sendMessage(mensagemTexto)
+                if (group.id._serialized !== '120363318496538868@g.us') {
+                  group.sendMessage(mensagemTexto)
+                } 
               } catch(e){
                 console.log('erro ao enviar msg');
               }
@@ -324,8 +330,15 @@ function confighora(horaenvio) {
       }); 
 };
 
-// EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
+//EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
 client.on('message', async msg => {
+  if (msg.body === null) return;
+  const mensagem = msg.body.slice(0,5);
+  primeirostr = mensagem.charAt(0);
+  if (primeirostr === '!') {
+    if (!comandosBot.includes(mensagem))
+      return msg.reply("Comando não reconhecido"), msg.react('🚫');
+  }      
   // REMOVER LINKS
   const chat = await client.getChatById(msg.id.remote);
   for (const participant of chat.participants) {
@@ -351,238 +364,235 @@ client.on('message', async msg => {
 });
 
 // COMANDO BOT
-client.on('message', async msg => {
-  if (msg.body === null) return;
+
+// client.on('message', async msg => {
+//   if (msg.body === null) return;
   
-  // ENVIAR MSG COM TEMPO DETERMINADO 
-  if (msg.body.startsWith('!env1 ') && msg.hasQuotedMsg) {
-    if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-    const quotedMsg = await msg.getQuotedMessage();
-    const attachmentData = await quotedMsg.downloadMedia();
-    const chat = await client.getChatById(msg.id.remote);
-    if (chat.isGroup) {
-      var temporizador = msg.body.slice(6);
-      var inttempo = Number(temporizador);
-      inttempo = inttempo*60000;
-      console.log(inttempo);
-      if (inttempo === 0) {
-        clearInterval(nIntervId1);
-      } else {
-        client.getChats().then(chats => {
-          const groups = chats.filter(chat => chat.isGroup);
+//   // ENVIAR MSG COM TEMPO DETERMINADO 
+//   if (msg.body.startsWith('!env1 ') && msg.hasQuotedMsg) {
+//     if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//     const quotedMsg = await msg.getQuotedMessage();
+//     const attachmentData = await quotedMsg.downloadMedia();
+//     const chat = await client.getChatById(msg.id.remote);
+//     if (chat.isGroup) {
+//       var temporizador = msg.body.slice(6);
+//       var inttempo = Number(temporizador);
+//       inttempo = inttempo*60000;
+//       console.log(inttempo);
+//       if (inttempo === 0) {
+//         clearInterval(nIntervId1);
+//       } else {
+//         client.getChats().then(chats => {
+//           const groups = chats.filter(chat => chat.isGroup);
 
-          if (groups.length == 0) {
-          }
-          else {
-            nIntervId1 = setInterval(() => {
-            groups.forEach((group, i) => {
-              setTimeout(function() {
-                try {
-                  if (quotedMsg.hasMedia) {
-                    group.sendMessage(attachmentData, { caption: quotedMsg.body });
-                  } else {
-                    group.sendMessage(quotedMsg.body);
-                  }
-                } catch(e){
-                  console.log('erro ao enviar msg');
-                }
-              },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-           });
-          }, inttempo)     
-         }
-        }); 
-      }
-    }
-  }
+//           if (groups.length == 0) {
+//           }
+//           else {
+//             nIntervId1 = setInterval(() => {
+//             groups.forEach((group, i) => {
+//               setTimeout(function() {
+//                 try {
+//                   if (quotedMsg.hasMedia) {
+//                     group.sendMessage(attachmentData, { caption: quotedMsg.body });
+//                   }
+//                 } catch(e){
+//                   console.log('erro ao enviar msg');
+//                 }
+//               },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//            });
+//           }, inttempo)     
+//          }
+//         }); 
+//       }
+//     }
+//   }
 
-  // ENVIAR MSG COM TEMPO DETERMINADO 
-  if (msg.body.startsWith('!env2 ') && msg.hasQuotedMsg) {
-      if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-      const quotedMsg = await msg.getQuotedMessage();
-      const attachmentData = await quotedMsg.downloadMedia();
-      const chat = await client.getChatById(msg.id.remote);
-      if (chat.isGroup) {
-        var temporizador = msg.body.slice(6);
-        var inttempo = Number(temporizador);
-        inttempo = inttempo*60000;
-        console.log(inttempo);
-       if (inttempo === 0) {
-        clearInterval(nIntervId2);
-        } else {
-          client.getChats().then(chats => {
-          const groups = chats.filter(chat => chat.isGroup);
+//     // ENVIAR MSG COM TEMPO DETERMINADO 
+//     if (msg.body.startsWith('!env2 ') && msg.hasQuotedMsg) {
+//       if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//       const quotedMsg = await msg.getQuotedMessage();
+//       const attachmentData = await quotedMsg.downloadMedia();
+//       const chat = await client.getChatById(msg.id.remote);
+//       if (chat.isGroup) {
+//         var temporizador = msg.body.slice(6);
+//         var inttempo = Number(temporizador);
+//         inttempo = inttempo*60000;
+//         console.log(inttempo);
+//        if (inttempo === 0) {
+//         clearInterval(nIntervId2);
+//         } else {
+//           client.getChats().then(chats => {
+//           const groups = chats.filter(chat => chat.isGroup);
 
-          if (groups.length == 0) {
-          }
-          else {
-            nIntervId2 = setInterval(() => {
-            groups.forEach((group, i) => {
-              setTimeout(function() {
-                try {
-                  if (quotedMsg.hasMedia) {
-                    group.sendMessage(attachmentData, { caption: quotedMsg.body });
-                  }
-                } catch(e){
-                  console.log('erro ao enviar msg');
-                }
-              },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-           });
-          }, inttempo)     
-         }
-        }); 
-      }
-    }
-  }
+//           if (groups.length == 0) {
+//           }
+//           else {
+//             nIntervId2 = setInterval(() => {
+//             groups.forEach((group, i) => {
+//               setTimeout(function() {
+//                 try {
+//                   if (quotedMsg.hasMedia) {
+//                     group.sendMessage(attachmentData, { caption: quotedMsg.body });
+//                   }
+//                 } catch(e){
+//                   console.log('erro ao enviar msg');
+//                 }
+//               },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//            });
+//           }, inttempo)     
+//          }
+//         }); 
+//       }
+//     }
+//   }
 
-  // ENVIAR MSG COM TEMPO DETERMINADO 
-  if (msg.body.startsWith('!env3 ') && msg.hasQuotedMsg) {
-    if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-    const quotedMsg = await msg.getQuotedMessage();
-    const attachmentData = await quotedMsg.downloadMedia();
-    const chat = await client.getChatById(msg.id.remote);
-    if (chat.isGroup) {
-      var temporizador = msg.body.slice(6);
-      var inttempo = Number(temporizador);
-      inttempo = inttempo*60000;
-      console.log(inttempo);
-      if (inttempo === 0) {
-        clearInterval(nIntervId3);
-      } else {
-        client.getChats().then(chats => {
-          const groups = chats.filter(chat => chat.isGroup);
+//       // ENVIAR MSG COM TEMPO DETERMINADO 
+//   if (msg.body.startsWith('!env3 ') && msg.hasQuotedMsg) {
+//     if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//     const quotedMsg = await msg.getQuotedMessage();
+//     const attachmentData = await quotedMsg.downloadMedia();
+//     const chat = await client.getChatById(msg.id.remote);
+//     if (chat.isGroup) {
+//       var temporizador = msg.body.slice(6);
+//       var inttempo = Number(temporizador);
+//       inttempo = inttempo*60000;
+//       console.log(inttempo);
+//       if (inttempo === 0) {
+//         clearInterval(nIntervId3);
+//       } else {
+//         client.getChats().then(chats => {
+//           const groups = chats.filter(chat => chat.isGroup);
 
-          if (groups.length == 0) {
-          }
-          else {
-            nIntervId3 = setInterval(() => {
-            groups.forEach((group, i) => {
-              setTimeout(function() {
-                try {
-                  if (quotedMsg.hasMedia) {
-                    group.sendMessage(attachmentData, { caption: quotedMsg.body });
-                  }
-                } catch(e){
-                  console.log('erro ao enviar msg');
-                }
-              },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-           });
-          }, inttempo)     
-         }
-        }); 
-      }
-    }
-  }
+//           if (groups.length == 0) {
+//           }
+//           else {
+//             nIntervId3 = setInterval(() => {
+//             groups.forEach((group, i) => {
+//               setTimeout(function() {
+//                 try {
+//                   if (quotedMsg.hasMedia) {
+//                     group.sendMessage(attachmentData, { caption: quotedMsg.body });
+//                   }
+//                 } catch(e){
+//                   console.log('erro ao enviar msg');
+//                 }
+//               },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//            });
+//           }, inttempo)     
+//          }
+//         }); 
+//       }
+//     }
+//   }
 
-  // MUDAR TITULO TODOS GRUPOS Q BOT FOR ADMIN
-  if (msg.body.startsWith('!assu ')) {
-    if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-    let newSubject = msg.body.slice(5);
-    client.getChats().then(chats => {
-      const groups = chats.filter(chat => chat.isGroup);
-      if (groups.length == 0) {
-        msg.reply('Você não tem grupos.');
-      }
-      else {
-        groups.forEach((group, i) => {
-          setTimeout(function() {
-            try{
-              group.setSubject(newSubject);
-              console.log('Assunto alterado para o grupo: ' + group.name);
-            } catch(e){
-              console.log('Erro ao alterar assunto do grupo: ' + group.name);
-            }
-          },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-        });
-      }
-    });
-  }
-
-  // ALTERAR DESCRIÇÃO TODOS GRUPOS Q BOT FOR ADMIN
-  else if (msg.body.startsWith('!desc ')) {
-    // MUDAR DESCRICAO DO GRUPO
-    if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-    let newDescription = msg.body.slice(6);
-    client.getChats().then(chats => {
-      const groups = chats.filter(chat => chat.isGroup);
-      if (groups.length == 0) {
-        msg.reply('Você não tem grupos.');
-      }
-      else {
-        groups.forEach((group, i) => {
-          setTimeout(function() {
-            try{
-              group.setDescription(newDescription);
-              console.log('Descrição alterada para o grupo: ' + group.name);
-            } catch(e){
-              console.log('Erro ao alterar descrição do grupo: ' + group.name);
-            }
-          },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-        });
-      }
-    });
-  }
-
-  // FECHAR TODOS GRUPOS Q BOT FOR ADMIN
-  else if (msg.body.startsWith('!fcgr')) {
-    // FECHAR TODOS OS GRUPOS QUE O BOT É ADMIN;
-    if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-    client.getChats().then(chats => {
-      const groups = chats.filter(chat => chat.isGroup);
-      if (groups.length == 0) {
-        msg.reply('Você não tem grupos.');
-      }
-      else {
-        groups.forEach((group, i) => {
-          setTimeout(function() {
-            try {
-              group.setMessagesAdminsOnly(true);
-              console.log('Grupo fechado: ' + group.name);
-            } catch(e){
-              console.log('Erro ao fechar grupo: ' + group.name);
-            }
-          },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-        });
-      }
-    });
-  }
-
-  // ABRIR TODOS GRUPOS Q BOT FOR ADMIN
-  else if (msg.body.startsWith('!abgr')) {
-  //ABRIR TODOS OS GRUPOS QUE O BOT É ADMIN;
-  if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
-  client.getChats().then(chats => {
-    const groups = chats.filter(chat => chat.isGroup);
-      if (groups.length == 0) {
-        msg.reply('Você não tem grupos.');
-      }
-      else {
-        groups.forEach((group, i) => {
-          setTimeout(function() {
-            try {
-              group.setMessagesAdminsOnly(false);
-              console.log('Grupo aberto: ' + group.name);
-            } catch(e){
-              console.log('Erro ao abrir grupo: ' + group.name);
-            }
-          },1000 + Math.floor(Math.random() * 4000) * (i+1) )
-        });
-      }
-    });
-  }
-});
+//   // MUDAR TITULO TODOS GRUPOS Q BOT FOR ADMIN
+//   if (msg.body.startsWith('!ass ')) {
+//     if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//     let newSubject = msg.body.slice(5);
+//     client.getChats().then(chats => {
+//       const groups = chats.filter(chat => chat.isGroup);
+//       if (groups.length == 0) {
+//         msg.reply('Você não tem grupos.');
+//       }
+//       else {
+//         groups.forEach((group, i) => {
+//           setTimeout(function() {
+//             try{
+//               group.setSubject(newSubject);
+//               console.log('Assunto alterado para o grupo: ' + group.name);
+//             } catch(e){
+//               console.log('Erro ao alterar assunto do grupo: ' + group.name);
+//             }
+//           },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//         });
+//       }
+//     });
+//   }
+//   // ALTERAR DESCRIÇÃO TODOS GRUPOS Q BOT FOR ADMIN
+//   else if (msg.body.startsWith('!desc ')) {
+//     // MUDAR DESCRICAO DO GRUPO
+//     if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//     let newDescription = msg.body.slice(6);
+//     client.getChats().then(chats => {
+//       const groups = chats.filter(chat => chat.isGroup);
+//       if (groups.length == 0) {
+//         msg.reply('Você não tem grupos.');
+//       }
+//       else {
+//         groups.forEach((group, i) => {
+//           setTimeout(function() {
+//             try{
+//               group.setDescription(newDescription);
+//               console.log('Descrição alterada para o grupo: ' + group.name);
+//             } catch(e){
+//               console.log('Erro ao alterar descrição do grupo: ' + group.name);
+//             }
+//           },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//         });
+//       }
+//     });
+//   }
+//   // FECHAR TODOS GRUPOS Q BOT FOR ADMIN
+//   else if (msg.body.startsWith('!fcgr')) {
+//     // FECHAR TODOS OS GRUPOS QUE O BOT É ADMIN;
+//     if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//     client.getChats().then(chats => {
+//       const groups = chats.filter(chat => chat.isGroup);
+//       if (groups.length == 0) {
+//         msg.reply('Você não tem grupos.');
+//       }
+//       else {
+//         groups.forEach((group, i) => {
+//           setTimeout(function() {
+//             try {
+//               group.setMessagesAdminsOnly(true);
+//               console.log('Grupo fechado: ' + group.name);
+//             } catch(e){
+//               console.log('Erro ao fechar grupo: ' + group.name);
+//             }
+//           },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//         });
+//       }
+//     });
+//   }
+//   // ABRIR TODOS GRUPOS Q BOT FOR ADMIN
+//   else if (msg.body.startsWith('!abrgr')) {
+//   //ABRIR TODOS OS GRUPOS QUE O BOT É ADMIN;
+//   if (!permissaoBot.includes(msg.author || msg.from)) return msg.reply("Você não pode enviar esse comando.");
+//   client.getChats().then(chats => {
+//     const groups = chats.filter(chat => chat.isGroup);
+//       if (groups.length == 0) {
+//         msg.reply('Você não tem grupos.');
+//       }
+//       else {
+//         groups.forEach((group, i) => {
+//           setTimeout(function() {
+//             try {
+//               group.setMessagesAdminsOnly(false);
+//               console.log('Grupo aberto: ' + group.name);
+//             } catch(e){
+//               console.log('Erro ao abrir grupo: ' + group.name);
+//             }
+//           },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+//         });
+//       }
+//     });
+//   }
+// });
 
 // ENVIAR MSG COM MENÇÃO AOS PARTICIPANTES
 client.on('message_create', async msg => {
   if (msg.body === '!pdr' && msg.hasQuotedMsg) {
-    const quotedMsg = await msg.getQuotedMessage();  
     const chat = await msg.getChat();
-    try {
-    let mentions = [];
-    for(let participant of chat.participants) {
-      if (participant.id._serialized === msg.author && !participant.isAdmin) 
-        return msg.reply("Você não pode enviar esse comando.");
-        const contact = await client.getContactById(participant.id._serialized);
-        mentions.push(contact);
+    const quotedMsg = await msg.getQuotedMessage();  
+    try{
+      let mentions = [];
+      for(let participant of chat.participants) {
+        if (participant.id._serialized === msg.author && !participant.isAdmin) 
+          return msg.reply("Você não pode enviar esse comando.");
+          const contact = await client.getContactById(participant.id._serialized);
+          mentions.push(contact);
+          
       }
       if (quotedMsg.hasMedia) {
         const attachmentData = await quotedMsg.downloadMedia();
@@ -590,11 +600,11 @@ client.on('message_create', async msg => {
       } else {
         await chat.sendMessage(quotedMsg.body, { mentions: mentions });
       }
-      } catch (e) {
-        console.log('© Bot AQUILES: '+e);
-      }
-    } 
-  }); 
+    } catch (e){
+      console.log('© Bot Apollo '+e)
+    }
+  }
+}); 
 
 // EVENTO DE NOVO USUÁRIO EM GRUPO
 client.on('group_join', async (notification) => {
@@ -635,7 +645,7 @@ client.on('group_join', async (notification) => {
   // MENSAGEM DE SAUDAÇÃO
   if (notification.id.remote) {
     const contact = await client.getContactById(notification.id.participant)
-    const texto1 = ', tudo bem? Seja bem vindo ao grupo *TURMA DA ANA OFICIAL*🎰💕🍀\n\n👉 *Se vocês estão procurando um grupo que divulga plataformas confiáveis estão no lugar certo…*\n\n📌Aqui postamos plataformas com gerentes confiáveis, horários, link de porcentagem, dicas de estratégias e sorteios de bancas\n\nQuem não quiser participar pode estar saindo sem problemas 🫶🏼\n\n📌*O INTUITO AQUI É VÊ VOCÊS FAZENDO GRANDES GANHOS*🥰\n\n🔞 Proibido para menores de 18 anos\nJOGUE COM RESPONSABILIDADE\nBoa Sorte';
+    const texto1 = ', tudo bem? Seja bem vindo ao Grupo *TURMA DA ANA OFICIAL* 🎰💕🍀\n\n👉 *Se você esta procurando um grupo que divulga plataformas confiáveis estão no lugar certo…*\n\n📌Aqui postamos plataformas com gerentes confiáveis, horários, link de porcentagem, dicas de estratégias e sorteios de bancas\n\nQuem não quiser participar pode estar saindo sem problemas 🫶🏼\n\n📌*O INTUITO AQUI É VÊ VOCÊS FAZENDO GRANDES GANHOS*🥰\n\n🔞 Proibido para menores de 18 anos\nJOGUE COM RESPONSABILIDADE\nBoa Sorte';
     const textos = [texto1];
 
     const mensagemTexto = `@${contact.number}!` + textos;
@@ -664,5 +674,5 @@ client.on('group_join', async (notification) => {
 
 // INITIALIZE DO SERVIÇO
 server.listen(port, function() {
-  console.log('© Bot AQUILES - Aplicativo rodando na porta *: ' + port);
+  console.log('© Bot Apollo - Aplicativo rodando na porta *: ' + port);
 });
