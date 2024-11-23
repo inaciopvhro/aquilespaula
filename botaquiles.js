@@ -14,7 +14,7 @@ const mysql = require('mysql2/promise');
 
 // PORTA ONDE O SERVIÇO SERÁ INICIADO
 const port = 3400;
-const idClient = 'Inacio';
+const idClient = 'Aquiles';
 var nIntervId1;
 var nIntervId2;
 var nIntervId3;
@@ -333,12 +333,7 @@ function confighora(horaenvio) {
 //EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
 client.on('message', async msg => {
   if (msg.body === null) return;
-  const mensagem = msg.body.slice(0,5);
-  primeirostr = mensagem.charAt(0);
-  if (primeirostr === '!') {
-    if (!comandosBot.includes(mensagem))
-      return msg.reply("Comando não reconhecido"), msg.react('🚫');
-  }      
+  
   // REMOVER LINKS
   const chat = await client.getChatById(msg.id.remote);
   for (const participant of chat.participants) {
