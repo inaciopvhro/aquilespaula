@@ -174,7 +174,7 @@ setInterval(() => {
     confighora(15);
   } else if (horas === 14 && minutos === 58) {
     confighora(16);
-  } else if (horas === 15 && minutos === 10) {
+  } else if (horas === 15 && minutos === 58) {
     confighora(17);
   } else if (horas === 16 && minutos === 58) {
     confighora(18);
