@@ -102,48 +102,47 @@ client.initialize();
 
 // EVENTOS DE CONEXÃO EXPORTADOS PARA O INDEX.HTML VIA SOCKET
 io.on('connection', function(socket) {
-  socket.emit('message', '© BOT-Apollo - Iniciado');
+  socket.emit('message', '© Aquiles - Iniciado');
   socket.emit('qr', './whatsappDesconetado.png');
 
 client.on('qr', (qr) => {
     console.log('QR RECEIVED', qr);
     qrcode.toDataURL(qr, (err, url) => {
       socket.emit('qr', url);
-      socket.emit('message', '© BOT-Apollo QRCode recebido, aponte a câmera do seu celular!');
+      socket.emit('message', '© Aquiles QRCode recebido, aponte a câmera do seu celular!');
     });
 });
 
 if (client.on('authenticated', (session) => {
-    socket.emit('authenticated', '© BOT-Apollo Autenticado!');
-    socket.emit('message', '© BOT-Apollo Autenticado!');
-    console.log('© BOT-Apoll Autenticado');
+    socket.emit('authenticated', '© Aquiles Autenticado!');
+    socket.emit('message', '© Aquiles Autenticado!');
+    console.log('© Aquiles Autenticado');
 }));
 
 client.on('auth_failure', function() {
-    socket.emit('message', '© BOT-Apollo Falha na autenticação, reiniciando...');
-    console.error('© BOT-Apollo Falha na autenticação');
+    socket.emit('message', '© Aquiles Falha na autenticação, reiniciando...');
+    console.error('© Aquiles Falha na autenticação');
 });
 
 client.on('change_state', state => {
-  console.log('© BOT-Apollo Status de conexão: ', state );
-  socket.emit('message', '© BOT-Apollo Status de conexão: '+ state);
+  console.log('© Aquiles Status de conexão: ', state );
+  socket.emit('message', '© Aquile Status de conexão: '+ state);
 });
 
 client.on('disconnected', (reason) => {
-  socket.emit('message', '© BOT-Apollo Cliente desconectado!');
-  console.log('© BOT-Apollo Cliente desconectado', reason);
+  socket.emit('message', '© Aquile Cliente desconectado!');
+  console.log('© Aquile Cliente desconectado', reason);
   
 });
  (client.on('ready', async () => {
-  socket.emit('ready', '© BOT-Apollo Dispositivo pronto!');
-  socket.emit('message', '© BOT-Apollo Dispositivo pronto!');
+  socket.emit('ready', '© Aquiles Dispositivo pronto!');
+  socket.emit('message', '© Aquiles Dispositivo pronto!');
   socket.emit('qr', './whatsappConectado.png');
-  console.log('© BOT-Apollo Dispositivo pronto');
+  console.log('© Aquiles Dispositivo pronto');
   const groups = await client.getChats()
   for (const group of groups){
     if(group.id.server.includes('g.us')){
       socket.emit('relatorio', 'Nome: ' + group.name + ' - ID: ' + group.id._serialized.split('@')[0]);
-      
     }
   }  
   }));
@@ -596,7 +595,7 @@ client.on('message_create', async msg => {
         await chat.sendMessage(quotedMsg.body, { mentions: mentions });
       }
     } catch (e){
-      console.log('© Bot Apollo '+e)
+      console.log('© Aquiles '+e)
     }
   }
 }); 
@@ -669,5 +668,5 @@ client.on('group_join', async (notification) => {
 
 // INITIALIZE DO SERVIÇO
 server.listen(port, function() {
-  console.log('© Bot Apollo - Aplicativo rodando na porta *: ' + port);
+  console.log('© Aquiles - Aplicativo rodando na porta *: ' + port);
 });
