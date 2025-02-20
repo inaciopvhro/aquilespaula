@@ -13,7 +13,7 @@ const io = socketIO(server);
 const mysql = require('mysql2/promise');
 
 // PORTA ONDE O SERVIÇO SERÁ INICIADO
-const port = 3400;
+const port = 3300;
 const idClient = 'Aquiles';
 var nIntervId1;
 var nIntervId2;
