@@ -22,7 +22,7 @@ var nIntervId3;
 // NUMEROS AUTORIZADOS
 const permissaoBot = ["556992102573@c.us", "556992793755@c.us", "557598453409@c.us", "557591385689@c.us", "556993986449@c.us", "557583480660@c.us"];
 
-const comandosBot = ["!env1", "!env2", "!env3", "!assu", "!desc", "!fcgr", "abgr", "!pdr"];
+const comandosBot = ["!env1", "!env2", "!env3", "!assu", "!desc", "!fcgr", "abgr", "!pdr", "!hrs"];
 
 function delay(t, v) {
   return new Promise(function(resolve) {
