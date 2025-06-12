@@ -359,8 +359,8 @@ client.on('message', async msg => {
 
 // COMANDO BOT
 
-// client.on('message', async msg => {
-//   if (msg.body === null) return;
+client.on('message', async msg => {
+   if (msg.body === null) return;
   
 // ENVIAR MSG COM TEMPO DETERMINADO 
   if (msg.body.startsWith('!env1 ') && msg.hasQuotedMsg) {
@@ -570,7 +570,7 @@ client.on('message', async msg => {
 //       }
 //     });
 //   }
-// });
+ });
 
 // ENVIAR MSG COM MENÇÃO AOS PARTICIPANTES
 client.on('message_create', async msg => {
