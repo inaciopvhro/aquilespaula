@@ -17,7 +17,7 @@ const port = 3300;
 const idClient = 'Impacto';
 
 // NUMEROS AUTORIZADOS
-const permissaoBot = ["5569992102573@c.us"];
+const permissaoBot = ["556992102573@c.us"];
 
 const createConnection = async () => {
 	return await mysql.createConnection({
@@ -123,7 +123,8 @@ client.on('message_create', async msg => {
     try{
       let mentions = [];
       for(let participant of chat.participants) {
-        if (!permissaoBot.includes(msg.author || msg.from)) return
+        if (!permissaoBot.includes(msg.author || msg.from)) 
+            return console.log('Numero não permitido');
           const contact = await client.getContactById(participant.id._serialized);
           mentions.push(contact);
           
