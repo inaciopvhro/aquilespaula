@@ -17,7 +17,7 @@ const port = 3300;
 const idClient = 'Impacto';
 
 // NUMEROS AUTORIZADOS
-const permissaoBot = ['+556992102573@c.us','+556993405268@c.us'];
+const permissaoBot = ['556992102573@c.us','556993405268@c.us'];
 
 const createConnection = async () => {
 	return await mysql.createConnection({
@@ -138,6 +138,9 @@ client.on('message_create', async msg => {
     } catch (e){
       console.log('© Impacto '+e)
     }
+  }
+  if (msg.body === '!id') {
+    console.log(msg.id._serialized);
   }
 
 }); 
