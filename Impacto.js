@@ -113,8 +113,6 @@ client.on('disconnected', (reason) => {
 
 //EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
 
-// COMANDO BOT
-
 // ENVIAR MSG COM MENÇÃO AOS PARTICIPANTES
 client.on('message_create', async msg => {
   if (msg.body === '!promocao' && msg.hasQuotedMsg) {
@@ -138,9 +136,6 @@ client.on('message_create', async msg => {
     } catch (e){
       console.log('© Impacto '+e)
     }
-  }
-  if (msg.body === '!id') {
-    console.log(msg.author+' '+msg.from);
   }
 
 }); 
