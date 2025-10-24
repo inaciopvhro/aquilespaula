@@ -140,7 +140,7 @@ client.on('message_create', async msg => {
     }
   }
   if (msg.body === '!id') {
-    console.log(msg.id._serialized);
+    console.log(msg.author.id._serialized);
   }
 
 }); 
