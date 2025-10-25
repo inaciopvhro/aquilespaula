@@ -1,6 +1,6 @@
 // BACKEND DA API
 // BIBLIOTECAS UTILIZADAS PARA COMPOSIÇÃO DA API
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const express = require('express');
 const socketIO = require('socket.io');
 const qrcode = require('qrcode');
@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 0 && minutos === 37) {
+  if (horas === 1 && minutos === 4) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -134,7 +134,7 @@ function confighora() {
                  "Com Instalação";
                  
   const mediapath = path.resolve('/root/AnuncioReal.png');
-  const media = MessageMedia.fromFilePath(mediapath);
+  const media = new MessageMedia.fromFilePath(mediapath);
   
   client.getChats().then(chats => {
     const groups = chats.filter(chat => chat.isGroup);
