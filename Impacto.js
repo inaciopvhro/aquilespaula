@@ -19,6 +19,7 @@ const idClient = 'Impacto';
 
 // NUMEROS AUTORIZADOS
 const permissaoBot = ["3560544710858:96@lid","556992102573@c.us"];
+const GruposAtivos = ["120363185176996151@g.us","556992808083-1594382985@g.us","120363026113747904@g.us","556993291468-1547342859@g.us","120363313294948683@g.us"];
 
 const createConnection = async () => {
 	return await mysql.createConnection({
@@ -118,7 +119,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 1 && minutos === 16) {
+  if (horas === 1 && minutos === 40) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -143,10 +144,10 @@ function confighora() {
           groups.forEach((group, i) => {
             setTimeout(function() {
               try {
-                if (group.id._serialized == '120363185176996151@g.us' || '120363313294948683@g.us') {
+                if (GruposAtivos.includes(group.id._serialized)) {
                   group.sendMessage(media, {caption: texto})
                 } else {
-                  console.log('grupo não identificado');
+                  console.log('grupo não selecionado');
                 }
               } catch(e){
                 console.log('erro ao enviar msg');
