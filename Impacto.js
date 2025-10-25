@@ -119,20 +119,36 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 1 && minutos === 40) {
+  if (horas === 8 && minutos === 15) {
     confighora()
+  } else if (horas === 9 && minutos === 10) {
+    confighora()
+  } else if (horas === 10 && minutos === 10) {
+    confighora()  
+  } else if (horas === 11 && minutos === 10) {
+    confighora()  
+  } else if (horas === 12 && minutos === 10) {
+    confighora()    
   } else if (horas === 13 && minutos === 10) {
     confighora()
-  } else if (horas === 20 && minutos === 14) {
+  } else if (horas === 14 && minutos === 10) {
+    confighora()  
+  } else if (horas === 15 && minutos === 10) {
+    confighora()  
+  } else if (horas === 16 && minutos === 10) {
+    confighora()  
+  } else if (horas === 17 && minutos === 10) {
+    confighora()  
+  } else if (horas === 18 && minutos === 10) {
+    confighora()  
+  } else if (horas === 19 && minutos === 14) {
     confighora()
   }
 }, 50000);
 
 function confighora() {
-  const texto = "*INACIO INFORMATICA*\n\n"+
-                 "Kit Antena Parabolica\n"+
-                 "Century MidiaBox B7 R$ 500,00\n"+
-                 "Com Instalação";
+  const texto = "*Kit Antena Parabolica*\n"+
+                 "Century MidiaBox B7";
     
   const media = MessageMedia.fromFilePath('./AnuncioReal.png');
   
@@ -146,8 +162,6 @@ function confighora() {
               try {
                 if (GruposAtivos.includes(group.id._serialized)) {
                   group.sendMessage(media, {caption: texto})
-                } else {
-                  console.log('grupo não selecionado');
                 }
               } catch(e){
                 console.log('erro ao enviar msg');
