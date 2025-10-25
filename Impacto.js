@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 1 && minutos === 4) {
+  if (horas === 1 && minutos === 11) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -134,7 +134,7 @@ function confighora() {
                  "Com Instalação";
                  
   const mediapath = path.resolve('/root/AnuncioReal.png');
-  const media = new MessageMedia.fromFilePath(mediapath);
+  const media = MessageMedia.fromFilePath(mediapath);
   
   client.getChats().then(chats => {
     const groups = chats.filter(chat => chat.isGroup);
