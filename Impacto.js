@@ -117,6 +117,7 @@ setInterval(() => {
   var dataAtual = new Date();
   var horas = dataAtual.getHours();
   var minutos = dataAtual.getMinutes();
+
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
   if (horas === 8 && minutos === 15) {
@@ -144,7 +145,7 @@ setInterval(() => {
   } else if (horas === 19 && minutos === 14) {
     confighora()
   }
-}, 50000);
+}, 58999);
 
 function confighora() {
   const texto = "*Kit Antena Parabolica*\n"+
