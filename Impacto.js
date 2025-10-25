@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 0 && minutos === 23) {
+  if (horas === 0 && minutos === 25) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
