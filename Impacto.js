@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 8 && minutos === 10) {
+  if (horas === 0 && minutos === 23) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -144,8 +144,8 @@ function confighora() {
           groups.forEach((group, i) => {
             setTimeout(function() {
               try {
-                if (group.id._serialized !== '120363318496538868@g.us') {
-                  group.sendMessage(media)
+                if (group.id._serialized == '120363185176996151@g.us' || '120363313294948683@g.us') {
+                  group.sendMessage(media, {caption: texto})
                 } 
               } catch(e){
                 console.log('erro ao enviar msg');
