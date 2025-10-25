@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 0 && minutos === 30) {
+  if (horas === 0 && minutos === 37) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -133,7 +133,7 @@ function confighora() {
                  "Century MidiaBox B7 R$ 500,00\n"+
                  "Com Instalação";
                  
-  const mediapath = path.resolve('./Anuncio Antena Promocao Real.png');
+  const mediapath = path.resolve('/root/AnuncioReal.png');
   const media = MessageMedia.fromFilePath(mediapath);
   
   client.getChats().then(chats => {
