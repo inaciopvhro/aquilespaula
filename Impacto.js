@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 0 && minutos === 25) {
+  if (horas === 0 && minutos === 30) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -146,7 +146,9 @@ function confighora() {
               try {
                 if (group.id._serialized == '120363185176996151@g.us' || '120363313294948683@g.us') {
                   group.sendMessage(media, {caption: texto})
-                } 
+                } else {
+                  console.log('grupo não identificado');
+                }
               } catch(e){
                 console.log('erro ao enviar msg');
               }
