@@ -118,7 +118,7 @@ setInterval(() => {
   var minutos = dataAtual.getMinutes();
 //  console.log("Agora são " + horas + ":" + minutos + "h.");
   
-  if (horas === 1 && minutos === 11) {
+  if (horas === 1 && minutos === 16) {
     confighora()
   } else if (horas === 13 && minutos === 10) {
     confighora()
@@ -132,9 +132,8 @@ function confighora() {
                  "Kit Antena Parabolica\n"+
                  "Century MidiaBox B7 R$ 500,00\n"+
                  "Com Instalação";
-                 
-  const mediapath = path.resolve('/root/AnuncioReal.png');
-  const media = MessageMedia.fromFilePath(mediapath);
+    
+  const media = MessageMedia.fromFilePath('./AnuncioReal.png');
   
   client.getChats().then(chats => {
     const groups = chats.filter(chat => chat.isGroup);
