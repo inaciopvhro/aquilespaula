@@ -11,6 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 const mysql = require('mysql2/promise');
+const path = require('path');
 
 // PORTA ONDE O SERVIÇO SERÁ INICIADO
 const port = 3300;
@@ -111,6 +112,49 @@ client.on('disconnected', (reason) => {
   }));
 });
 
+setInterval(() => {
+  var dataAtual = new Date();
+  var horas = dataAtual.getHours();
+  var minutos = dataAtual.getMinutes();
+//  console.log("Agora são " + horas + ":" + minutos + "h.");
+  
+  if (horas === 8 && minutos === 10) {
+    confighora()
+  } else if (horas === 13 && minutos === 10) {
+    confighora()
+  } else if (horas === 20 && minutos === 14) {
+    confighora()
+  }
+}, 50000);
+
+function confighora() {
+  const texto = "*INACIO INFORMATICA*\n\n"+
+                 "Kit Antena Parabolica\n"+
+                 "Century MidiaBox B7 R$ 500,00\n"+
+                 "Com Instalação";
+                 
+  const mediapath = path.resolve('./Anuncio Antena Promocao Real.png');
+  const media = MessageMedia.fromFilePath(mediapath);
+  
+  client.getChats().then(chats => {
+    const groups = chats.filter(chat => chat.isGroup);
+        if (groups.length == 0) {
+        }
+        else {
+          groups.forEach((group, i) => {
+            setTimeout(function() {
+              try {
+                if (group.id._serialized !== '120363318496538868@g.us') {
+                  group.sendMessage(media)
+                } 
+              } catch(e){
+                console.log('erro ao enviar msg');
+              }
+            },1000 + Math.floor(Math.random() * 4000) * (i+1) )
+         });
+       }
+      }); 
+};
 //EVENTO DE ESCUTA DE MENSAGENS RECEBIDAS PELA API
 
 // ENVIAR MSG COM MENÇÃO AOS PARTICIPANTES
@@ -138,6 +182,28 @@ client.on('message_create', async msg => {
     }
   }
 
+}); 
+
+client.on('message_create', async msg => {
+  if (permissaoBot.includes(msg.author || msg.from))  {
+    const chat = await msg.getChat();
+    const quotedMsg = await msg.getQuotedMessage();  
+    try{
+      let mentions = [];
+      for(let participant of chat.participants) {
+          const contact = await client.getContactById(participant.id._serialized);
+          mentions.push(contact);
+      }
+      if (quotedMsg.hasMedia) {
+        const attachmentData = await quotedMsg.downloadMedia();
+        await chat.sendMessage(attachmentData, {mentions: mentions, caption: quotedMsg.body});
+      } else {
+        await chat.sendMessage(quotedMsg.body, { mentions: mentions });
+      }
+    } catch (e){
+      console.log('© Impacto '+e)
+    }
+  }
 }); 
 
 // INITIALIZE DO SERVIÇO
